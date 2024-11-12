@@ -4,14 +4,20 @@ name: CI
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
+  # push:
+    # branches: [ 'pr1', 'pr2', 'pr3' ]
   pull_request:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
+    types:
+      - closed
+    branches: [ 'main' ]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'latest tag'
+        required: true
+      dev_ap_image_tag:
+        description: 'Image tag of AP development environment'
+        required: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -34,3 +40,11 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
+
+      - name: workflow dispatch example
+        run: |
+          if [[ ${{ inputs.tag }} == 'latest' ]]; then
+            echo "image is latest"
+          else
+            echo "image is ${{ inputs.dev_ap_image_tag }}"
+          fi
